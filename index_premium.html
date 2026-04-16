@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>牧知源 · 智慧牧业文献助手</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: #F5F7FA;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            color: #1F2329;
+        }
+        .glass-panel {
+            width: 100%;
+            max-width: 1000px;
+            height: 92vh;
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 32px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .app-header {
+            padding: 22px 28px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            background: rgba(255,255,255,0.3);
+        }
+        .header-title { display: flex; align-items: center; gap: 12px; }
+        .ai-icon { font-size: 2.2rem; }
+        .header-text h1 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: #1F2329;
+            letter-spacing: 1px;
+        }
+        .badge {
+            background: #E5E9F0;
+            border-radius: 40px;
+            padding: 4px 14px;
+            font-size: 0.75rem;
+            color: #646A73;
+            font-weight: 500;
+        }
+        .chat-window {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .chat-window::-webkit-scrollbar { width: 4px; }
+        .chat-window::-webkit-scrollbar-thumb { background: #C9CDD4; border-radius: 10px; }
+        .message { display: flex; flex-direction: column; max-width: 85%; animation: slide 0.25s ease; }
+        .user-message { align-self: flex-end; }
+        .ai-message { align-self: flex-start; }
+        .bubble {
+            padding: 14px 18px;
+            border-radius: 22px;
+            line-height: 1.55;
+            font-size: 0.95rem;
+            word-wrap: break-word;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .user-message .bubble {
+            background: #1664FF;
+            color: white;
+            border-bottom-right-radius: 8px;
+        }
+        .ai-message .bubble {
+            background: white;
+            border: 1px solid #E5E9F0;
+            color: #1F2329;
+            border-bottom-left-radius: 8px;
+        }
+        .loading-bubble {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+        }
+        .typing-dots { display: flex; gap: 5px; }
+        .typing-dots span {
+            width: 7px; height: 7px; border-radius: 50%; background: #86909C;
+            animation: dotPulse 1.4s infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotPulse {
+            0%,60%,100% { opacity: 0.3; transform: scale(0.8); }
+            30% { opacity: 1; transform: scale(1.2); background: #1664FF; }
+        }
+        @keyframes slide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .timestamp { font-size: 0.65rem; color: #86909C; margin: 6px 12px 0; }
+        .user-message .timestamp { text-align: right; }
+        .input-area {
+            padding: 18px 24px;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            gap: 12px;
+        }
+        .input-area input {
+            flex: 1;
+            padding: 14px 18px;
+            background: white;
+            border: 1px solid #E5E9F0;
+            border-radius: 48px;
+            font-size: 0.95rem;
+            color: #1F2329;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .input-area input:focus { border-color: #1664FF; box-shadow: 0 0 0 3px rgba(22,100,255,0.08); }
+        .send-btn {
+            background: #1664FF;
+            border: none;
+            border-radius: 48px;
+            padding: 14px 28px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(22,100,255,0.2);
+        }
+        .send-btn:hover { background: #0050E0; transform: scale(1.02); }
+        .send-btn:active { transform: scale(0.98); }
+        @media (max-width: 600px) {
+            .glass-panel { height: 96vh; border-radius: 24px; }
+            .app-header { padding: 16px 18px; }
+            .header-text h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="glass-panel">
+    <div class="app-header">
+        <div class="header-title">
+            <span class="ai-icon">🐄</span>
+            <div class="header-text">
+                <h1>牧知源 · 智询</h1>
+                <span class="badge">13.5万文献块 · 云端AI增强</span>
+            </div>
+        </div>
+    </div>
+    <div class="chat-window" id="chatWindow">
+        <div class="message ai-message">
+            <div class="bubble">🐄 你好，我是牧知源。已接入13.5万畜牧文献与云端大模型，请随时提问。</div>
+            <div class="timestamp">刚刚</div>
+        </div>
+    </div>
+    <div class="input-area">
+        <input type="text" id="messageInput" placeholder="输入问题，例如：乙醇梭菌蛋白的粗蛋白含量？" autocomplete="off" />
+        <button class="send-btn" id="sendBtn">发送</button>
+    </div>
+</div>
+<script>
+    (function(){
+        // 请将IP地址改为你电脑的实际局域网IP
+        const API_URL = 'https://6ffc5ace.r35.cpolar.top/chat';
+        const chatWindow = document.getElementById('chatWindow');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        function addMessage(text, sender) {
+            const msg = document.createElement('div'); msg.className = `message ${sender}-message`;
+            const bubble = document.createElement('div'); bubble.className = 'bubble'; bubble.textContent = text;
+            const ts = document.createElement('div'); ts.className = 'timestamp'; ts.textContent = new Date().toLocaleTimeString();
+            msg.appendChild(bubble); msg.appendChild(ts); chatWindow.appendChild(msg);
+            chatWindow.scrollTop = chatWindow.scrollHeight; return msg;
+        }
+        function addLoading() {
+            const id = 'load-'+Date.now(); const msg = document.createElement('div');
+            msg.className = 'message ai-message'; msg.id = id;
+            const bubble = document.createElement('div'); bubble.className = 'bubble loading-bubble';
+            bubble.innerHTML = '检索文献中 <div class="typing-dots"><span></span><span></span><span></span></div>';
+            msg.appendChild(bubble); chatWindow.appendChild(msg); chatWindow.scrollTop = chatWindow.scrollHeight; return id;
+        }
+        function removeLoading(id) { const el = document.getElementById(id); if(el) el.remove(); }
+        async function sendMessage() {
+            const q = messageInput.value.trim(); if(!q) return;
+            addMessage(q,'user'); messageInput.value = ''; const loadId = addLoading();
+            try {
+                const res = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({content:q}) });
+                if(!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json(); removeLoading(loadId); addMessage(data.answer || '(未返回回答)','ai');
+            } catch(e) {
+                removeLoading(loadId); addMessage(`请求失败：${e.message}`,'ai');
+            }
+        }
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', e => { if(e.key==='Enter') sendMessage(); });
+        messageInput.focus();
+    })();
+</script>
+</body>
+</html>
